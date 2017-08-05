@@ -1,0 +1,15 @@
+- add options people know from grep
+  - add option invert match -v --invert-match
+  - add option word match -w --word-regexp
+- add moar colors (allow user to choose)
+- add real world usage examples
+  - csv highlight negative numbers
+  - highlight numbers larger than x
+- add capture group support to highlight only matching groups, not the surroundings
+- add option multiple patterns with specific colors
+- add testing
+  - separate main functionality into a function
+    - Highlight.scala
+    - cli app with main hl.scala
+  - coverage
+  - travis
