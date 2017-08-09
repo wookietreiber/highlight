@@ -5,24 +5,24 @@ import scala.io.AnsiColor
 import scala.io.Source
 import scala.util.matching.Regex
 
-case class Config(pattern: String, files: List[File])
+case class Config(pattern: String,
+                  files: List[File],
+                  ignoreCase: Boolean = false)
 
 object hl extends App with AnsiColor {
 
   val parser = new scopt.OptionParser[Config]("hl") {
-    head("highlight", "0.0.1")
+    head(BuildInfo.name, BuildInfo.version)
 
-    help("help").text("prints this usage text")
-
-    version("version")
-
-    arg[String]("pattern").text("").action((x, c) => c.copy(pattern = x))
+    arg[String]("pattern")
+      .action((x, c) => c.copy(pattern = x))
+      .text("search pattern")
 
     arg[File]("file...")
       .unbounded()
       .optional()
       .action((x, c) => c.copy(files = x :: c.files))
-      .text("input files, reads STDIN if empty")
+      .text("input files, reads STDIN if non are given")
       .validate(x =>
         if (x.exists) {
           success
@@ -31,13 +31,32 @@ object hl extends App with AnsiColor {
       })
 
     note("""|
-            |search for pattern and highlight matches""".stripMargin)
+            |search for pattern and highlight matches
+            |
+            |options:
+            |""".stripMargin)
+
+    opt[Unit]('i', "ignore-case")
+      .action((x, c) => c.copy(ignoreCase = true))
+      .text("ignore case")
+
+    note("\nother options:\n")
+
+    help("help").text("prints this usage text")
+
+    version("version")
+
+    note("")
   }
 
   parser.parse(args, Config(pattern = "", files = Nil)) match {
     case Some(config) =>
       val files = config.files.reverse
-      val regex = config.pattern.r
+      val regex = if (config.ignoreCase) {
+        s"(?i)${config.pattern}".r
+      } else {
+        config.pattern.r
+      }
 
       val sources: List[Source] =
         if (files.isEmpty) {

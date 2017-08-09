@@ -1,13 +1,22 @@
+enablePlugins(BuildInfoPlugin)
 enablePlugins(GitVersioning)
 enablePlugins(ScalaNativePlugin)
 
 name := "highlight"
 
-git.baseVersion := "0.0.1"
+git.baseVersion := "0.0.2"
 
 scalaVersion := "2.11.11"
 
-libraryDependencies += "com.github.scopt" %%% "scopt" % "3.6.0"
+libraryDependencies += "com.github.scopt" %%% "scopt" % "3.7.0"
+
+// ----------------------------------------------------------------------------
+// build info
+// ----------------------------------------------------------------------------
+
+buildInfoKeys := Seq[BuildInfoKey](name, version)
+
+buildInfoPackage := "highlight"
 
 // ----------------------------------------------------------------------------
 // scalafmt integration
