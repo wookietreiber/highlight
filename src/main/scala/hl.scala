@@ -5,9 +5,11 @@ import scala.io.AnsiColor
 import scala.io.Source
 import scala.util.matching.Regex
 
-case class Config(pattern: String,
-                  files: List[File],
-                  ignoreCase: Boolean = false)
+final case class Config(
+    pattern: String = "",
+    files: List[File] = Nil,
+    ignoreCase: Boolean = false
+)
 
 object hl extends App with AnsiColor {
 
@@ -49,7 +51,7 @@ object hl extends App with AnsiColor {
     note("")
   }
 
-  parser.parse(args, Config(pattern = "", files = Nil)) match {
+  parser.parse(args, Config()) match {
     case Some(config) =>
       val files = config.files.reverse
       val regex = if (config.ignoreCase) {

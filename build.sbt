@@ -1,14 +1,34 @@
+// ----------------------------------------------------------------------------
+// sbt plugins
+// ----------------------------------------------------------------------------
+
 enablePlugins(BuildInfoPlugin)
 enablePlugins(GitVersioning)
 enablePlugins(ScalaNativePlugin)
 
+// ----------------------------------------------------------------------------
+// basic project settings
+// ----------------------------------------------------------------------------
+
 name := "highlight"
 
-git.baseVersion := "0.0.2"
+git.baseVersion in ThisBuild := "0.0.2"
 
-scalaVersion := "2.11.11"
+scalaVersion in ThisBuild := "2.11.12"
 
 libraryDependencies += "com.github.scopt" %%% "scopt" % "3.7.0"
+
+// ----------------------------------------------------------------------------
+// scala compiler options
+// ----------------------------------------------------------------------------
+
+scalacOptions in ThisBuild ++= Seq(
+  "-deprecation",
+  "-encoding",
+  "UTF-8",
+  "-feature",
+  "-unchecked"
+)
 
 // ----------------------------------------------------------------------------
 // build info
@@ -19,18 +39,26 @@ buildInfoKeys := Seq[BuildInfoKey](name, version)
 buildInfoPackage := "highlight"
 
 // ----------------------------------------------------------------------------
-// scalafmt integration
+// formatting
 // ----------------------------------------------------------------------------
 
-scalafmtVersion := "1.1.0"
+scalafmtVersion := "1.4.0"
 
 scalafmtOnCompile := true
 
 // ----------------------------------------------------------------------------
-// scalastyle integration
+// linting
 // ----------------------------------------------------------------------------
 
 scalastyleConfig := file(".scalastyle-config.xml")
+
+wartremoverErrors in (Compile, compile) ++= Seq(
+  Wart.ArrayEquals,
+  Wart.FinalCaseClass,
+  Wart.OptionPartial,
+  Wart.TraversableOps,
+  Wart.TryPartial
+)
 
 // ----------------------------------------------------------------------------
 // install
